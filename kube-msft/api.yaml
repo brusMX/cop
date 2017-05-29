@@ -1,0 +1,64 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: api
+  labels:
+    app: cs-api
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: cs-api
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: cs-api
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: cs-api
+    spec:
+      imagePullSecrets:
+      - name: coscale-registry
+      containers:
+      - name: api
+        image: docker.coscale.com/coscale/api:1.0.8407
+        ports:
+        - containerPort: 80
+        env:
+        - name: API_SUPER_USER
+          valueFrom:
+            configMapKeyRef:
+              name: coscale-config
+              key: coscale.super.email
+        - name: API_SUPER_PASSWD
+          valueFrom:
+            configMapKeyRef:
+              name: coscale-config
+              key: coscale.super.passwd
+        - name: API_URL
+          valueFrom:
+            configMapKeyRef:
+              name: coscale-config
+              key: coscale.api.url
+        - name: APP_URL
+          valueFrom:
+            configMapKeyRef:
+              name: coscale-config
+              key: coscale.app.url
+        - name: SUPPORT_EMAIL
+          valueFrom:
+            configMapKeyRef:
+              name: coscale-config
+              key: coscale.email.support
+        - name: ANOMALY_EMAIL
+          valueFrom:
+            configMapKeyRef:
+              name: coscale-config
+              key: coscale.email.anomaly
+      nodeSelector:
+        "coscale/workload.interactive": "true"

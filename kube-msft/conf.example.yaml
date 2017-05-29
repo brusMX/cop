@@ -1,0 +1,18 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: coscale-config
+data:
+  coscale.super.email: ""
+  coscale.super.passwd: ""
+  coscale.api.url: ""
+  coscale.app.url: ""
+  coscale.email.from: "dummy@coscale.com"
+  coscale.email.support: "support@coscale.com"
+  coscale.email.anomaly: "anomaly@coscale.com"
+  coscale.email.server: "cmail.coscale.com"
+  coscale.email.port: "25"
+  coscale.email.use_ssl: "false"
+  coscale.email.use_auth: "false"
+  coscale.email.username: ""
+  coscale.email.password: ""

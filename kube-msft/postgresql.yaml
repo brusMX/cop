@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgresql
+  labels:
+    app: cs-postgresql
+spec:
+  ports:
+  - port: 5432
+    protocol: TCP
+  selector:
+    app: cs-postgresql
+---
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: cs-postgresql
+spec:
+  template:
+    metadata:
+      labels:
+        app: cs-postgresql
+    spec:
+      imagePullSecrets:
+      - name: coscale-registry
+      containers:
+      - name: postgresql
+        image: docker.coscale.com/coscale/postgresql:1.0.8407
+        ports:
+        - containerPort: 5432
+        volumeMounts:
+        - mountPath: /var/lib/postgresql
+          name: psql-data
+      volumes:
+      - name: psql-data
+        hostPath:
+          path: /data/postgresql
+      nodeSelector:
+        "coscale/workload.db": "true"

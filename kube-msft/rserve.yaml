@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: rserve
+  labels:
+    app: cs-rserve
+spec:
+  ports:
+  - port: 6311
+    protocol: TCP
+  selector:
+    app: cs-rserve
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: cs-rserve
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: cs-rserve
+    spec:
+      imagePullSecrets:
+      - name: coscale-registry
+      containers:
+      - name: rserve
+        image: docker.coscale.com/coscale/rserve:1.0.8407
+        ports:
+        - containerPort: 6311
+      nodeSelector:
+        "coscale/workload.interactive": "true"

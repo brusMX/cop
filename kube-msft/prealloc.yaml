@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: cs-prealloc
+spec:
+  template:
+    metadata:
+      labels:
+        app: cs-prealloc
+    spec:
+      imagePullSecrets:
+      - name: coscale-registry
+      containers:
+      - name: datastore
+        image: docker.coscale.com/coscale/datastore:1.0.8407
+        command: [ "/opt/coscale/datastore/bin/preallocate.sh" ]
+      restartPolicy: Never

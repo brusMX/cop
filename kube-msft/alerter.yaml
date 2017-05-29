@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: cs-alerter
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: cs-alerter
+    spec:
+      imagePullSecrets:
+      - name: coscale-registry
+      containers:
+      - name: alerter
+        image: docker.coscale.com/coscale/alerter:1.0.8407
+        env:
+        - name: API_SUPER_USER
+          valueFrom:
+            configMapKeyRef:
+              name: coscale-config
+              key: coscale.super.email
+        - name: API_SUPER_PASSWD
+          valueFrom:
+            configMapKeyRef:
+              name: coscale-config
+              key: coscale.super.passwd
+        - name: API_URL
+          valueFrom:
+            configMapKeyRef:
+              name: coscale-config
+              key: coscale.api.url
+        - name: APP_URL
+          valueFrom:
+            configMapKeyRef:
+              name: coscale-config
+              key: coscale.app.url
+      nodeSelector:
+        "coscale/workload.worker": "true"
