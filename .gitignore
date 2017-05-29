@@ -1,3 +1,4 @@
 /conf.sh
 /data/**
-/kube-msft/conf.sh
+/kube-msft/conf.yaml
+/kube-msft/run.sh
